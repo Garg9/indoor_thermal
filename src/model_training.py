@@ -77,6 +77,7 @@ def train_models(X, y):
 
 
 if __name__ == "__main__":
+    import pandas as pd
     from src.data_loader import load_raw_data
     from src.preprocessing import preprocess_data
 
