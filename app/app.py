@@ -279,9 +279,38 @@ if os.path.exists(MODEL_PATH):
     model = joblib.load(MODEL_PATH)
 else:
     # Train model dynamically (for deployment)
-    df = load_raw_data()
-    X, y = preprocess_data(df)
-    model = train_models(X, y)
+    try:
+        df_raw = load_raw_data()
+        X, y = preprocess_data(df_raw)
+        model = train_models(X, y)
+    except Exception as e:
+        st.error("⚠️ Model Training Failed!")
+        st.error(f"Error: {e}")
+        
+        # Diagnostic information
+        try:
+            st.write("### 🔍 Data Diagnostic")
+            df_raw = load_raw_data()
+            X, y = preprocess_data(df_raw)
+            st.write("Comfort Class Distribution:")
+            st.write(pd.Series(y).value_counts())
+            
+            st.info("""
+            **Why is this happening?**
+            This error usually occurs when the model file is not found (e.g., too large for GitHub) and the alternative 
+            data source (`sample_ashrae.csv`) doesn't have enough variety for training.
+            
+            **How to fix:**
+            1. Ensure `data/sample_ashrae.csv` contains multiple comfort classes (Cold, Neutral, Warm).
+            2. Run `create_sample_dataset.py` locally to generate a balanced sample and push it to GitHub.
+            """)
+        except Exception as diag_e:
+            st.error(f"Failed to load diagnostic data: {diag_e}")
+        
+        st.stop()
+    # df = load_raw_data()
+    # X, y = preprocess_data(df)
+    # model = train_models(X, y)
 
 
 # ------------------- HOME / INDEX PAGE -------------------
