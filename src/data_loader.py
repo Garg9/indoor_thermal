@@ -20,7 +20,7 @@
 import pandas as pd
 from pathlib import Path
 
-DATA_PATH = Path("data/raw/ashrae_db2.01.csv")
+DATA_PATH = Path("data/sample_ashrae.csv")
 
 def load_raw_data():
     """Load the raw ASHRAE thermal comfort dataset."""
