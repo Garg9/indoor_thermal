@@ -4,6 +4,7 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
 import os
+import pandas as pd 
 
 MODEL_PATH = "models/thermal_comfort_model.pkl"
 
@@ -12,7 +13,16 @@ def train_models(X, y):
     """
     Train and compare ML models for thermal comfort prediction.
     """
-
+    # Check if we have at least 2 classes
+    unique_classes = pd.Series(y).unique()
+    if len(unique_classes) < 2:
+        class_counts = pd.Series(y).value_counts().to_dict()
+        raise ValueError(
+            f"Training failed: The dataset contains only one class: {unique_classes[0]}. "
+            f"Machine Learning classifiers require at least 2 distinct classes to train. "
+            f"Current distribution: {class_counts}. "
+            "Please check your input data (sample_ashrae.csv) for variety."
+        )
     # Train-test split
     X_train, X_test, y_train, y_test = train_test_split(
         X,
